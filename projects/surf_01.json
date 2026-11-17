@@ -1,0 +1,87 @@
+{
+  "output": "videos/output/surf_01.mp4",
+  "font": "/usr/share/fonts/truetype/liberation/LiberationSerif-Regular.ttf",
+  "grade": "eq=brightness=0.04:contrast=1.08:saturation=1.2:gamma=1.08",
+  "audio": null,
+  "segments": [
+    {
+      "src": "assets/raw/set_01/dji_fly_20260918_171154_0045_1789723662733_video.MP4",
+      "start": 1.0,
+      "end": 3.9,
+      "texts": [
+        {
+          "text": "I",
+          "t0": 0.0,
+          "t1": 1.0,
+          "x": 0.2,
+          "y": 0.15,
+          "size": 80
+        },
+        {
+          "text": "Went",
+          "t0": 0.33,
+          "t1": 1.0,
+          "x": 0.26,
+          "y": 0.18,
+          "size": 80
+        },
+        {
+          "text": "From",
+          "t0": 0.67,
+          "t1": 1.0,
+          "x": 0.16,
+          "y": 0.22,
+          "size": 80
+        },
+        {
+          "text": "THIS",
+          "t0": 1.0,
+          "t1": 2.9,
+          "x": "center",
+          "y": 0.2,
+          "size": 100
+        }
+      ]
+    },
+    {
+      "src": "assets/raw/set_01/dji_fly_20260918_170426_0029_1789723706694_video.MP4",
+      "start": 5.0,
+      "end": 8.0,
+      "texts": [
+        {
+          "text": "THIS",
+          "t0": 0.0,
+          "t1": 3.0,
+          "x": "center",
+          "y": 0.2,
+          "size": 100
+        }
+      ],
+      "zoom": 1.2,
+      "focus": [
+        0.5,
+        0.75
+      ]
+    },
+    {
+      "src": "assets/raw/set_01/dji_fly_20260918_171640_0053_1789723630790_video.MP4",
+      "start": 4.0,
+      "end": 12.5,
+      "texts": [
+        {
+          "text": "To THIS",
+          "t0": 0.0,
+          "t1": 2.8,
+          "x": "center",
+          "y": 0.2,
+          "size": 100
+        }
+      ],
+      "zoom": 1.35,
+      "focus": [
+        0.45,
+        0.7
+      ]
+    }
+  ]
+}

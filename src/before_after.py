@@ -15,7 +15,12 @@ Spec format (times in seconds, relative to the source clip or to the segment):
   ]
 }
 x / y are fractions of the frame (x may be "center"); size is px at 1080 wide.
-A segment may add "zoom": 1.35 and "focus": [cx, cy] to punch in on the subject.
+Optional per segment:
+  "speed": 0.5        slow motion (0.5 is smooth for 60 fps footage), 2.0 = double speed
+  "zoom": 1.35        static punch-in, or [1.0, 1.4] to zoom in / [1.4, 1.0] to zoom out
+  "focus": [cx, cy]   where the zoom aims, 0..1 across the frame (default centre)
+Speed ramps: list the same clip as consecutive segments with different speeds.
+Text t0/t1 are in reel time, i.e. after the speed change.
 """
 
 import json
@@ -51,19 +56,26 @@ def build(spec: dict) -> list[str]:
     total = 0.0
 
     for i, seg in enumerate(spec["segments"]):
-        dur = seg["end"] - seg["start"]
+        src_dur = seg["end"] - seg["start"]
+        speed = seg.get("speed", 1.0)
+        dur = src_dur / speed  # length in the finished reel
         total += dur
-        cmd += ["-ss", str(seg["start"]), "-t", f"{dur:.3f}", "-i", seg["src"]]
-        chain = ["setpts=PTS-STARTPTS"]
-        # optional punch-in: zoom factor + where to aim (0..1 of the free margin)
+        cmd += ["-ss", str(seg["start"]), "-t", f"{src_dur:.3f}", "-i", seg["src"]]
+
+        # zoom: a number (static) or [from, to] (animated, eased over the segment)
         z = seg.get("zoom", 1.0)
-        if z > 1.0:
-            cx, cy = seg.get("focus", [0.5, 0.5])
-            chain.append(f"crop=iw/{z}:ih/{z}:(iw-ow)*{cx}:(ih-oh)*{cy}")
-        chain += [
-            f"scale={W}:{H}:force_original_aspect_ratio=increase:flags=lanczos",
-            f"crop={W}:{H}",
+        z0, z1 = (z, z) if isinstance(z, (int, float)) else z
+        ease = f"(0.5-0.5*cos(PI*clip(t/{dur:.3f},0,1)))"
+        zexpr = f"({z0}+({z1}-{z0})*{ease})" if z0 != z1 else str(z0)
+        cx, cy = seg.get("focus", [0.5, 0.5])
+
+        chain = [
+            f"setpts=(PTS-STARTPTS)/{speed}",  # <1 = slow motion, >1 = fast
             f"fps={FPS}",
+            "crop='min(iw,ih*9/16)':'min(ih,iw*16/9)'",  # force 9:16
+            f"scale=w='trunc({W}*{zexpr}/2)*2':h='trunc({H}*{zexpr}/2)*2'"
+            f":eval=frame:flags=lanczos",
+            f"crop={W}:{H}:x='(iw-ow)*{cx}':y='(ih-oh)*{cy}'",
         ]
         if grade:
             chain.append(grade)

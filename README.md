@@ -39,3 +39,14 @@ GitHub rejects files over 100 MB. `.gitattributes` routes `*.mp4`, `*.mov`, `*.w
 ```bash
 git lfs install
 ```
+
+## Before → after reels with speed ramps and zooms
+
+```bash
+python src/before_after.py projects/surf_02.json
+```
+
+Each segment in the JSON can set `speed` (0.5 = slow motion, 2 = fast),
+`zoom` (`1.3`, or `[1.0, 1.4]` to zoom in, `[1.4, 1.0]` to zoom out) and `focus`
+(where the zoom aims). For a speed ramp, list the same clip several times in a row
+with different speeds. See the docstring in `src/before_after.py`.
